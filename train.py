@@ -1,6 +1,7 @@
 from keras.models import Model
 from keras.layers import Input, LSTM, Dense
 from keras.callbacks import ModelCheckpoint
+from keras.utils import plot_model
 import numpy as np
 from preprocess import Data
 
@@ -40,6 +41,9 @@ model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
 
 # get summary
 model.summary()
+
+# save model.png
+plot_model(model, 'model.png', show_shapes=True)
 
 # Compile the model
 model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['acc'])
