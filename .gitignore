@@ -1,1 +1,5 @@
 .env/
+__pycache__/
+fra.txt
+_about.txt
+*.h5
