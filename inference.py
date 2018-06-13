@@ -8,8 +8,8 @@ model = load_model('model.100-0.23.h5')
 
 # inference part
 # encoder part
-encoder_inputs = model.layers[0].input
-_, encoder_h, encoder_c = model.layers[2].output
+encoder_inputs = model.get_layer('encoder_inputs').input
+_, encoder_h, encoder_c = model.get_layer('encoder_lstm').output
 encoder_states = [encoder_h, encoder_c]
 encoder_model = Model(encoder_inputs, encoder_states)
 
@@ -17,17 +17,16 @@ encoder_model = Model(encoder_inputs, encoder_states)
 decoder_input_h = Input(shape=(LATENT_DIM,), name='decoder_input_h')
 decoder_input_c = Input(shape=(LATENT_DIM,), name='decoder_input_c')
 decoder_states_inputs = [decoder_input_h, decoder_input_c]
-decoder_inputs = Input(shape=(None, model.layers[1].input.shape[-1].value), name='decoder_inputs')
-decoder_lstm = model.layers[3]
+decoder_inputs = model.get_layer('decoder_inputs').input
+decoder_lstm = model.get_layer('decoder_lstm')
 decoder_outputs, state_h, state_c = decoder_lstm(decoder_inputs, initial_state=decoder_states_inputs)
 decoder_states_outputs = [state_h, state_c]
-decoder_dense = model.layers[-1]
+decoder_dense = model.get_layer('decoder_dense')
 decoder_outputs = decoder_dense(decoder_outputs)
 decoder_model = Model(
     [decoder_inputs] + decoder_states_inputs,
     [decoder_outputs] + decoder_states_outputs
 )
-decoder_model.summary()
 
 NUM_SAMPLES = 10000
 data = Data(NUM_SAMPLES)

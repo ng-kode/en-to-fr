@@ -23,16 +23,16 @@ EPOCHS = 100
 DECODER_MAXLEN = data.DECODER_MAXLEN
 
 # encoder part
-encoder_inputs = Input(shape=(None, ENCODER_NUM_TOKENS))
-encoder_lstm = LSTM(LATENT_DIM, activation='tanh', return_state=True)
+encoder_inputs = Input(shape=(None, ENCODER_NUM_TOKENS), name='encoder_inputs')
+encoder_lstm = LSTM(LATENT_DIM, activation='tanh', return_state=True, name='encoder_lstm')
 _, state_h, state_c = encoder_lstm(encoder_inputs)
 encoder_states = [state_h, state_c]
 
 # decoder part
-decoder_inputs = Input(shape=(None, DECODER_NUN_TOKENS))
-decoder_lstm = LSTM(LATENT_DIM, activation='tanh', return_sequences=True, return_state=True)
+decoder_inputs = Input(shape=(None, DECODER_NUN_TOKENS), name='decoder_inputs')
+decoder_lstm = LSTM(LATENT_DIM, activation='tanh', return_sequences=True, return_state=True, name='decoder_lstm')
 decoder_outputs, _, _ = decoder_lstm(decoder_inputs, initial_state=encoder_states)
-decoder_dense = Dense(DECODER_NUN_TOKENS, activation='softmax')
+decoder_dense = Dense(DECODER_NUN_TOKENS, activation='softmax', name='decoder_dense')
 decoder_outputs = decoder_dense(decoder_outputs)
 
 # bridge the seq2seqModel
